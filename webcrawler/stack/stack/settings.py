@@ -14,6 +14,7 @@ BOT_NAME = 'stack'
 SPIDER_MODULES = ['stack.spiders']
 NEWSPIDER_MODULE = 'stack.spiders'
 
+
 # DOWNLOADER_MIDDLEWARES = {'stack.middlewares.CustomDownloaderMiddleware': 543, 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,}
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
