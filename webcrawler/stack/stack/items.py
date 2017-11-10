@@ -11,5 +11,6 @@ import scrapy
 class StackItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
+    domain = scrapy.Field()
     title = scrapy.Field()
     url = scrapy.Field()
