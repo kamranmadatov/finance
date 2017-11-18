@@ -1,0 +1,30 @@
+Congress should renew a push to enact a national data breach notice standard, lawmakers and witnesses at a hearing on massive data breaches at Equifax Inc. and Yahoo Inc. said Nov. 8.
+
+Companies across the U.S. have to deal with a hodgepodge of state data breach notification laws with varying standards. Companies often express concern about dealing with standards in 48 states and the District of Columbia. Alabama and South Dakota are the only two states without breach laws. Breach notice bills that would preempt those laws with a single national standard have been introduced since 2003, but none have crossed the finish line.
+
+But that may change in light of the 2017 Equifax data breach that affected at least 143 million U.S. consumers and the multiple Yahoo data breaches revealed in 2016 involving an estimated 3 billion accounts. The Commerce hearing featured leaders from the two companies as witnesses.
+
+Equifax CEO Paulino do Rego Barros Jr., former Equifax CEO Richard Smith, and former Yahoo CEO Marissa Mayer testified about the breaches at their companies under hard questioning by committee members. Mayer appeared in response to a subpoena, a Senate Commerce spokesman told Bloomberg Law. No other subpoenas were issued for the hearing, he said.
+
+A Single Standard
+A national data breach notification law would force companies to treat consumers the same across multiple jurisdictions and provide “consistency and certainty” that would benefit consumers and companies, Chairman John Thune (R-S.D.) said during the hearing. Congress also could include uniform reasonable security requirements for companies, he said.
+
+Verizon Communications Corp., which acquired Yahoo as it was dealing with the massive data breach, would support such a measure, Karen Zacharia, the company’s deputy general counsel and chief privacy officer, told lawmakers.
+
+The Senate Commerce Committee is a logical place for a national breach notice law to originate because it has dealt with the issue for years.
+
+The Senate Commerce leadership “has been focused on data security and cybersecurity” for at least a decade because it has a unique portfolio that covers cybersecurity, data breaches, and critical infrastructure, Norma Krayem, senior policy adviser at Holland & Knight LLP in Washington and co-chair of the firm’s cybersecurity and privacy team, told Bloomberg Law.
+
+‘Push Congress Over Edge?’
+The massive data breaches may serve as a tipping point for Congress. Although national data breach notification measures have failed in the past, the sensitive nature of the data exposed and the millions of U.S. consumers affected may drive Congress to finally pass such a bill.
+
+The Equifax data breach will likely “push Congress over the edge” because it included highly sensitive information and impacted millions of U.S. consumers, Jeff Dennis, cybersecurity and managing partner at Newmeyer & Dillion LLP in Newport Beach, Calif. told Bloomberg Law Nov. 8.
+
+The best method to gain support for a national breach standard would be to create a private-public working group, Zacharia said in response to committee questions.
+
+Congress may want to look at states with the more robust data breach notification laws as models to enact such a measure.
+
+California and New York “provide a very good starting point” for any data breach notification legislation, Dennis said.
+
+
+https://www.bna.com/massive-equifax-yahoo-n73014471862/
