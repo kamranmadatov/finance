@@ -115,7 +115,13 @@ def get_data(doc):
     for i in range(3, 10 + 1):
         _odata[i] = (_odata[i] / _odata[2]) * 100
     # Vocabulary
-        
+    if (_odata[3] > _odata[4]):
+    	print("Article is positive!")
+    else:
+    	print("Article is negative!")
+    
+    
+    
     return _odata
 
 
