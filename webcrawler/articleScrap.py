@@ -36,8 +36,7 @@ def articleConversion(url, domain):
         article.download()
         article.parse()
         article.nlp()
-        print(article.authors)
-
+        print(article.text)
         #publish date print does not work
         #print(article.publish_date)
     return url
