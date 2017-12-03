@@ -48,7 +48,7 @@ MASTER_DICTIONARY_FILE = r'LoughranMcDonald_MasterDictionary_2014.csv'
 # User defined output file
 OUTPUT_FILE = r'./Temp/Parser.csv'
 # Setup output
-OUTPUT_FIELDS = ['file name,', 'file size,', 'number of words,', '% positive,', '% negative,',
+OUTPUT_FIELDS = ['url,','date,','file name,', 'file size,', 'number of words,', 'sentiment score,','% positive,', '% negative,',
                  '% uncertainty,', '% litigious,', '% modal-weak,', '% modal moderate,',
                  '% modal strong,', '% constraining,', '# of alphanumeric,', '# of digits,',
                  '# of numbers,', 'avg # of syllables per word,', 'average word length,', 'vocabulary']
@@ -72,50 +72,97 @@ def main():
         doc = doc.upper()  # for this parse caps aren't informative so shift
 
         output_data = get_data(doc)
-        output_data[0] = file
-        output_data[1] = doc_len
+        output_data[0] = "url"
+        output_data[1] = "date"
+        output_data[2] = file
+        output_data[3] = doc_len
+        output_data[5] = output_data[6]-output_data[7] #positive vs negative
         wr.writerow(output_data)
 
+def createDoc():
 
+    f_out = open(OUTPUT_FILE, 'w')
+    wr = csv.writer(f_out, lineterminator='\n')
+    wr.writerow(OUTPUT_FIELDS)
+
+def getArticle(url,date,title,body):
+
+    f_out = open(OUTPUT_FILE, 'a')
+    wr = csv.writer(f_out, lineterminator='\n')
+    
+
+    print(title)
+    
+    
+    doc_len = len(body)
+    body = re.sub('(May|MAY)', ' ', body)  # drop all May month references
+    body = body.upper()  # for this parse caps aren't informative so shift
+
+    output_data = get_data(body)
+    output_data[0] = url
+    output_data[1] = date
+    output_data[2] = title
+    output_data[3] = doc_len
+    output_data[5] = output_data[6]-output_data[7]
+    wr.writerow(output_data)
+
+
+
+
+
+
+##def wrAnalysis(stock,date, sentimentScore) 
+##    myFile = open('countries.csv', 'w')  
+##        with myFile:  
+##            myFields = [date[0], data[1]]
+##            writer = csv.DictWriter(myFile, fieldnames=myFields)    
+##            writer.writeheader()
+##            writer.writerow({'country' : 'France', 'capital': 'Paris'})
+##            writer.writerow({'country' : 'Italy', 'capital': 'Rome'})
+##            writer.writerow({'country' : 'Spain', 'capital': 'Madrid'})
+##            writer.writerow({'country' : 'Russia', 'capital': 'Moscow'})
+##
+##    
 def get_data(doc):
 
     vdictionary = {}
-    _odata = [0] * 17
+    _odata = [0] * 20
     total_syllables = 0
     word_length = 0
     
     tokens = re.findall('\w+', doc)  # Note that \w+ splits hyphenated words
     for token in tokens:
         if not token.isdigit() and len(token) > 1 and token in lm_dictionary:
-            _odata[2] += 1  # word count
+            _odata[4] += 1  # word count
             word_length += len(token)
             if token not in vdictionary:
                 vdictionary[token] = 1
-            if lm_dictionary[token].positive: _odata[3] += 1
-            if lm_dictionary[token].negative: _odata[4] += 1
-            if lm_dictionary[token].uncertainty: _odata[5] += 1
-            if lm_dictionary[token].litigious: _odata[6] += 1
-            if lm_dictionary[token].weak_modal: _odata[7] += 1
-            if lm_dictionary[token].moderate_modal: _odata[8] += 1
-            if lm_dictionary[token].strong_modal: _odata[9] += 1
-            if lm_dictionary[token].constraining: _odata[10] += 1
+            if lm_dictionary[token].positive: _odata[6] += 1
+            if lm_dictionary[token].negative: _odata[7] += 1
+            if lm_dictionary[token].uncertainty: _odata[8] += 1
+            if lm_dictionary[token].litigious: _odata[9] += 1
+            if lm_dictionary[token].weak_modal: _odata[10] += 1
+            if lm_dictionary[token].moderate_modal: _odata[11] += 1
+            if lm_dictionary[token].strong_modal: _odata[12] += 1
+            if lm_dictionary[token].constraining: _odata[13] += 1
             total_syllables += lm_dictionary[token].syllables
 
-    _odata[11] = len(re.findall('[A-Z]', doc))
-    _odata[12] = len(re.findall('[0-9]', doc))
+    _odata[14] = len(re.findall('[A-Z]', doc))
+    _odata[15] = len(re.findall('[0-9]', doc))
     # drop punctuation within numbers for number count
     doc = re.sub('(?!=[0-9])(\.|,)(?=[0-9])', '', doc)
     doc = doc.translate(str.maketrans(string.punctuation, " " * len(string.punctuation)))
-    _odata[13] = len(re.findall(r'\b[-+\(]?[$€£]?[-+(]?\d+\)?\b', doc))
-    _odata[14] = total_syllables / _odata[2]
-    _odata[15] = word_length / _odata[2]
-    _odata[16] = len(vdictionary)
+    _odata[16] = len(re.findall(r'\b[-+\(]?[$€£]?[-+(]?\d+\)?\b', doc))
+    _odata[17] = total_syllables / _odata[4]
+    _odata[18] = word_length / _odata[4]
+    _odata[19] = len(vdictionary)
+    
     
     # Convert counts to %
-    for i in range(3, 10 + 1):
-        _odata[i] = (_odata[i] / _odata[2]) * 100
+    for i in range(6, 12 + 1):
+        _odata[i] = (_odata[i] / _odata[4]) * 100
     # Vocabulary
-        
+     
     return _odata
 
 
