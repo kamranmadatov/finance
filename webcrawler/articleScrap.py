@@ -85,7 +85,7 @@ class GenericSpider(Spider):
     def parse(self,response):
 
         maxDate = datetime.date.today()
-        #timedelta (days, mins, secs)
+        maxDate = maxDate - datetime.timedelta(90, 0, 0)
         minDate = maxDate - datetime.timedelta(12, 0, 0)
 
         if (self.domain == "wsj.com"):
