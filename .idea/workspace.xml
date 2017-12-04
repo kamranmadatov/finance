@@ -3,7 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="57ca53cf-7ec2-4172-af22-8a6aab4bc246" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SentimentScore/Generic_Parser.py" afterPath="$PROJECT_DIR$/SentimentScore/Generic_Parser.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SentimentScore/Temp/Parser.csv" afterPath="$PROJECT_DIR$/SentimentScore/Temp/Parser.csv" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webcrawler/articleScrap.py" afterPath="$PROJECT_DIR$/webcrawler/articleScrap.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webcrawler/stack/stack/spiders/wsj.py" afterPath="$PROJECT_DIR$/webcrawler/stack/stack/spiders/wsj.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -17,8 +20,8 @@
       <file leaf-file-name="bloomberg.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/webcrawler/stack/stack/spiders/bloomberg.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="19" column="17" lean-forward="false" selection-start-line="19" selection-start-column="17" selection-end-line="19" selection-end-column="17" />
+            <state relative-caret-position="285">
+              <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -27,20 +30,32 @@
       <file leaf-file-name="wsj.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/webcrawler/stack/stack/spiders/wsj.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="21" column="36" lean-forward="true" selection-start-line="21" selection-start-column="36" selection-end-line="21" selection-end-column="36" />
+            <state relative-caret-position="225">
+              <caret line="19" column="30" lean-forward="false" selection-start-line="19" selection-start-column="30" selection-end-line="19" selection-end-column="34" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="articleScrap.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="articleScrap.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/webcrawler/articleScrap.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="868">
-              <caret line="70" column="50" lean-forward="false" selection-start-line="70" selection-start-column="50" selection-end-line="70" selection-end-column="50" />
+            <state relative-caret-position="387">
+              <caret line="57" column="21" lean-forward="true" selection-start-line="57" selection-start-column="21" selection-end-line="57" selection-end-column="21" />
               <folding>
                 <element signature="e#317#353#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Generic_Parser.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/SentimentScore/Generic_Parser.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="560">
+              <caret line="93" column="0" lean-forward="true" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
+              <folding>
+                <element signature="e#1246#1256#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -49,8 +64,8 @@
       <file leaf-file-name="newsConvert.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/webcrawler/stack/stack/newsConvert.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="25" selection-end-column="23" />
+            <state relative-caret-position="210">
+              <caret line="14" column="23" lean-forward="false" selection-start-line="14" selection-start-column="23" selection-end-line="14" selection-end-column="23" />
               <folding>
                 <element signature="e#113#142#0" expanded="true" />
               </folding>
@@ -62,20 +77,8 @@
         <entry file="file://$PROJECT_DIR$/webcrawler/stack/stack/settings.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="256">
-              <caret line="23" column="17" lean-forward="true" selection-start-line="23" selection-start-column="17" selection-end-line="23" selection-end-column="22" />
+              <caret line="23" column="17" lean-forward="false" selection-start-line="23" selection-start-column="17" selection-end-line="23" selection-end-column="22" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Generic_Parser.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SentimentScore/Generic_Parser.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="491">
-              <caret line="118" column="8" lean-forward="false" selection-start-line="118" selection-start-column="8" selection-end-line="118" selection-end-column="8" />
-              <folding>
-                <element signature="e#1246#1256#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -92,6 +95,7 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>Robot</find>
+      <find>%s</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -107,15 +111,16 @@
       <list>
         <option value="$PROJECT_DIR$/webcrawler/stack/stack/spiders/bloomberg.py" />
         <option value="$PROJECT_DIR$/webcrawler/stack/stack/spiders/newsScrap.py" />
-        <option value="$PROJECT_DIR$/webcrawler/stack/stack/spiders/wsj.py" />
         <option value="$PROJECT_DIR$/webcrawler/stack/stack/settings.py" />
+        <option value="$PROJECT_DIR$/SentimentScore/Generic_Parser.py" />
+        <option value="$PROJECT_DIR$/webcrawler/stack/stack/spiders/wsj.py" />
         <option value="$PROJECT_DIR$/webcrawler/articleScrap.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="23" />
-    <option name="width" value="1440" />
+    <option name="width" value="720" />
     <option name="height" value="877" />
   </component>
   <component name="ProjectView">
@@ -144,6 +149,12 @@
               <item name="finance" type="b2602c69:ProjectViewProjectNode" />
               <item name="finance" type="462c0819:PsiDirectoryNode" />
               <item name="SentimentScore" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="finance" type="b2602c69:ProjectViewProjectNode" />
+              <item name="finance" type="462c0819:PsiDirectoryNode" />
+              <item name="SentimentScore" type="462c0819:PsiDirectoryNode" />
+              <item name="Modules" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="finance" type="b2602c69:ProjectViewProjectNode" />
@@ -299,7 +310,8 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="877" extended-state="0" />
+    <frame x="0" y="23" width="1440" height="877" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -313,7 +325,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24305555" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24930556" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -432,56 +444,72 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SentimentScore/Generic_Parser.py">
+    <entry file="file://$PROJECT_DIR$/webcrawler/stack/stack/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="491">
-          <caret line="118" column="8" lean-forward="false" selection-start-line="118" selection-start-column="8" selection-end-line="118" selection-end-column="8" />
-          <folding>
-            <element signature="e#1246#1256#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/webcrawler/stack/stack/spiders/bloomberg.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="19" column="17" lean-forward="false" selection-start-line="19" selection-start-column="17" selection-end-line="19" selection-end-column="17" />
+        <state relative-caret-position="256">
+          <caret line="23" column="17" lean-forward="false" selection-start-line="23" selection-start-column="17" selection-end-line="23" selection-end-column="22" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/webcrawler/stack/stack/newsConvert.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="25" selection-end-column="23" />
+        <state relative-caret-position="210">
+          <caret line="14" column="23" lean-forward="false" selection-start-line="14" selection-start-column="23" selection-end-line="14" selection-end-column="23" />
           <folding>
             <element signature="e#113#142#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webcrawler/stack/stack/spiders/wsj.py">
+    <entry file="file://$PROJECT_DIR$/webcrawler/stack/stack/spiders/bloomberg.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="21" column="36" lean-forward="true" selection-start-line="21" selection-start-column="36" selection-end-line="21" selection-end-column="36" />
+        <state relative-caret-position="285">
+          <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webcrawler/stack/stack/settings.py">
+    <entry file="file://$PROJECT_DIR$/SentimentScore/Modules/Load_MasterDictionary.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
-          <caret line="23" column="17" lean-forward="true" selection-start-line="23" selection-start-column="17" selection-end-line="23" selection-end-column="22" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SentimentScore/Modules/LoughranMcDonald_MasterDictionary_2014.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webcrawler/stack/stack/spiders/wsj.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="19" column="30" lean-forward="false" selection-start-line="19" selection-start-column="30" selection-end-line="19" selection-end-column="34" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/webcrawler/articleScrap.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="868">
-          <caret line="70" column="50" lean-forward="false" selection-start-line="70" selection-start-column="50" selection-end-line="70" selection-end-column="50" />
+        <state relative-caret-position="387">
+          <caret line="57" column="21" lean-forward="true" selection-start-line="57" selection-start-column="21" selection-end-line="57" selection-end-column="21" />
           <folding>
             <element signature="e#317#353#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SentimentScore/Generic_Parser.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="560">
+          <caret line="93" column="0" lean-forward="true" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
+          <folding>
+            <element signature="e#1246#1256#0" expanded="true" />
           </folding>
         </state>
       </provider>

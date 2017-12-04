@@ -10,14 +10,14 @@ class StackSpider(Spider):
     maxDate = "2017/11/02"
     page = 1
     name = "wsj"
-    allowed_domains = ["fool.com"]
+    allowed_domains = ["money.cnn.com", "cnn.com"]
     custom_settings = {'FEED_URI' : "../articles/"+queryName +".csv" }
-    start_urls = ["https://www.fool.com/search/solr.aspx?q=" + queryName + "&sort=date&dataSource=article&handleSearch=true",]
+    start_urls = ["http://money.cnn.com/search/index.html?sortBy=date&primaryType=mixed&search=Search&query=%s" % queryName]
     def parse(self,response):
-        articles = Selector(response).xpath('//dl[@class="results"]/dt')
+        articles = Selector(response).xpath('//div[@class="summaryBlock"]/div[@class="cnnHeadline"]')
         for article in articles:
             item = StackItem()
-            item['domain'] = "fool.com"
+            item['domain'] = "cnbc.com"
             item['title'] = article.xpath('a/text()').extract()[0]
             item['url'] = article.xpath('a/@href').extract()[0]
             yield item
