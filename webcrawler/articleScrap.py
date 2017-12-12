@@ -87,15 +87,7 @@ class GenericSpider(Spider):
                 self.start_urls = ["https://search.cnbc.com/rs/search/view.html?partnerId=2000&keywords=%s&sort=date&type=news&source=CNBC.com&pubtime=0&pubfreq=a" % name]
                 Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//div[@id="rightPagCol"]',)), callback="parse", follow= True),)
     def parse(self,response):
-
-<<<<<<< HEAD
-        maxDate = datetime.date.today()
-        maxDate = maxDate - datetime.timedelta(90, 0, 0)
-        minDate = maxDate - datetime.timedelta(12, 0, 0)
-
-=======
         print(self.maxDate , self.minDate)
->>>>>>> venvMergeScripts
         if (self.domain == "wsj.com"):
             articles = Selector(response).xpath('//div[@class="headline-container"]/h3[@class="headline"]')
         elif (self.domain == "bloomberg.com"):
@@ -143,9 +135,9 @@ def runCrawlers():
     GP.createDoc()
     #create instance of spider and pass argument
     #runner.crawl(GenericSpider, domain="barrons.com", name=queryName)
-    runner.crawl(GenericSpider, domain="bloomberg.com", name=queryName, days=daysBack)
-    runner.crawl(GenericSpider, domain="fool.com", name=queryName,days=daysBack)
-    #runner.crawl(GenericSpider, domain="cnbc.com", name=queryName)
+    #runner.crawl(GenericSpider, domain="bloomberg.com", name=queryName, days=daysBack)
+    #runner.crawl(GenericSpider, domain="fool.com", name=queryName,days=daysBack)
+    runner.crawl(GenericSpider, domain="cnbc.com", name=queryName)
     d = runner.join()
     d.addBoth(lambda _: reactor.stop())
 
