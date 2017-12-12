@@ -63,16 +63,20 @@ def getDate(url, domain):
 
 class GenericSpider(Spider):
     name = "generic"
-    def __init__(self, domain=None, name=None, *args, **kwargs):
+    def __init__(self, domain=None, name=None, days=None, *args, **kwargs):
             super(GenericSpider,self).__init__(*args, **kwargs)
             self.custom_settings = {'FEED_URI' : "/%s.csv" % name }
             self.domain = domain
+            self.page = 1
+            self.maxDate = datetime.date.today()
+            #self.maxDate = datetime.date.today() - datetime.timedelta(32, 0, 0)
+            self.minDate = self.maxDate - datetime.timedelta(days, 0, 0)
+            self.count = 0
             if (domain == "wsj.com"):
-                #self.start_urls = ["https://www.wsj.com/search/term.html?KEYWORDS=%s&min-date=%s&max-date=%s&page=%s&daysback=2d&isAdvanced=true&andor=AND&sort=date-desc&source=wsjarticle,wsjblogs,wsjvideo,sitesearch" % (name, minDate, maxDate, str(page)),]
                 self.start_urls = ["https://www.wsj.com/search/term.html?KEYWORDS=%s" % name ]
             elif (domain == "bloomberg.com"):
-                #self.start_urls = ["https://www.bloomberg.com/search?query=%s&startTime=-1m&sort=time:desc&endTime=%sT00:08:18.617Z&page=1" % (name, maxDate)]
                 self.start_urls = ["https://www.bloomberg.com/search?query=%s&sort=time:desc" % name]
+                #self.start_urls = ["https://www.bloomberg.com/search?query=%s&sort=time:desc&endTime=2017-11-09T23:26:35.497Z" % name]
                 Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//a[@class="content-next-link"]',)), callback="parse", follow= True),)
             elif (domain == "fool.com"):
                 self.start_urls = ["https://www.fool.com/search/solr.aspx?q=%s&sort=date&dataSource=article&handleSearch=true" % name]
@@ -81,64 +85,67 @@ class GenericSpider(Spider):
                 self.start_urls = ["http://money.cnn.com/search/index.html?sortBy=date&primaryType=mixed&search=Search&query=%s" % name]
             elif (domain == "cnbc.com"):
                 self.start_urls = ["https://search.cnbc.com/rs/search/view.html?partnerId=2000&keywords=%s&sort=date&type=news&source=CNBC.com&pubtime=0&pubfreq=a" % name]
-                Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//div[@id="rightPagCol"]/a',)), callback="parse", follow= True),)
+                Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//div[@id="rightPagCol"]',)), callback="parse", follow= True),)
     def parse(self,response):
 
+<<<<<<< HEAD
         maxDate = datetime.date.today()
         maxDate = maxDate - datetime.timedelta(90, 0, 0)
         minDate = maxDate - datetime.timedelta(12, 0, 0)
 
+=======
+        print(self.maxDate , self.minDate)
+>>>>>>> venvMergeScripts
         if (self.domain == "wsj.com"):
             articles = Selector(response).xpath('//div[@class="headline-container"]/h3[@class="headline"]')
         elif (self.domain == "bloomberg.com"):
             articles = Selector(response).xpath('//div[@class="search-result-story__container"]/h1[@class="search-result-story__headline"]')
             next_page = response.xpath('.//a[@class="content-next-link"]/@href').extract()
-            page = 2;
         elif (self.domain == "fool.com"):
             articles = Selector(response).xpath('//dl[@class="results"]/dt')
             next_page = response.xpath('.//a[@class="rounded pageNext"]/@href').extract()
-            page = 2;
         elif (self.domain == "cnn.com"):
             articles = Selector(response).xpath('//div[@class="summaryBlock"]/div[@class="cnnHeadline"]')
         elif (self.domain == "cnbc.com"):
             articles = Selector(response).xpath('//div[@class="SearchResultCard"]/h3[@class="title"]')
             next_page = response.xpath('.//div[@id="rightPagCol"]/a/@href').extract()
-            page = 2;
         for article in articles:
             #do page parsing by "next" button (The Motley Fool, Bloombergh, MoneyCNN
             date = getDate(article.xpath('a/@href').extract()[0], self.domain)
-            date = date.date()
-            if(date < maxDate and date > minDate):
-                #next_page = response.xpath('.//a[@class="button next"]/@href').extract()
-                articleConversion(article.xpath('a/@href').extract()[0], self.domain)
-                print(date)
+            try:
+                date = date.date()
+                if(date <= self.maxDate and date >= self.minDate):
+                    articleConversion(article.xpath('a/@href').extract()[0], self.domain)
+                    print(date)
+            except:
+                pass
+        try:
+            if (date > self.minDate):
                 if next_page:
-                    #next_href = next_page[0]
-                    next_href = '&page=' + str(page)
+                    self.page+= 1
+                    print("Next page checked! " + str(self.page));
+                    next_href = '&page=' + str(self.page)
                     next_page_url = self.start_urls[0] + next_href
                     request = Request(url=next_page_url)
                     yield request
-                    page+=1
-            elif(date < minDate):
-                break
-
+        except:
+            pass
             #pass article, but check published date to determine time period... whether we keep parsing
 
 
 
 def runCrawlers():
-    print(sys.path)
     #ask user for company's name
     queryName = str(input("Enter a company's name : ")).lower()
-
+    daysBack = int(input("Enter how many days back: "))
     configure_logging()
     runner = CrawlerRunner()
     GP.createDoc()
     #create instance of spider and pass argument
     #runner.crawl(GenericSpider, domain="barrons.com", name=queryName)
-    runner.crawl(GenericSpider, domain="bloomberg.com", name=queryName)
-    runner.crawl(GenericSpider, domain="fool.com", name=queryName)
-    runner.crawl(GenericSpider, domain="cnbc.com", name=queryName)
+    runner.crawl(GenericSpider, domain="bloomberg.com", name=queryName, days=daysBack)
+    runner.crawl(GenericSpider, domain="fool.com", name=queryName,days=daysBack)
+    #runner.crawl(GenericSpider, domain="cnbc.com", name=queryName)
     d = runner.join()
     d.addBoth(lambda _: reactor.stop())
 
