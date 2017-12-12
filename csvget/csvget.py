@@ -10,7 +10,7 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 # Retrieve webpage as string
 tickerName = input("Enter a stock ticker: ").lower()
-date = date.today().year - 10
+date = date.today().year - 11
 response = urllib.request.urlopen("https://finance.google.com/finance/historical?q=" + tickerName + "&startdate=jan+1+" + str(date) + "&output=csv")
 
 csv = response.read()
