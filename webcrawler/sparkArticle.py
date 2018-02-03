@@ -27,6 +27,7 @@ from newspaper import Article
 from scrapy_splash import SplashRequest
 import sys
 sys.path.append('/Users/bthai/Desktop/venv/finance/SentimentScore')
+from pyspark import SparkContext, SparkConf
 import Generic_Parser as GP
 
 class StackItem(Item):
@@ -70,31 +71,31 @@ class GenericSpider(Spider):
             yield SplashRequest(url=url, callback=self.parse, endpoint='render.html')
 
     def __init__(self, domain=None, name=None, days=None, *args, **kwargs):
-            super(GenericSpider,self).__init__(*args, **kwargs)
-            self.custom_settings = {'FEED_URI' : "/%s.csv" % name }
-            self.domain = domain
-            self.page = 1
-            self.maxDate = datetime.date.today()
-            self.minDate = self.maxDate - datetime.timedelta(days, 0, 0)
-            self.count = 0
-            if (domain == "wsj.com"):
-                self.start_urls = ["https://www.wsj.com/search/term.html?KEYWORDS=%s" % name ]
-            elif (domain == "bloomberg.com"):
-                self.start_urls = ["https://www.bloomberg.com/search?query=%s&sort=time:desc" % name]
-                Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//a[@class="content-next-link"]',)), callback="parse", follow= True),)
-            elif (domain == "fool.com"):
-                self.start_urls = ["https://www.fool.com/search/solr.aspx?q=%s&sort=date&dataSource=article&handleSearch=true" % name]
-                Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//a[@class="rounded pageNext"]',)), callback="parse", follow= True),)
-            elif (domain == "cnn.com"):
-                self.start_urls = ["http://money.cnn.com/search/index.html?sortBy=date&primaryType=mixed&search=Search&query=%s" % name]
-            elif (domain == "cnbc.com"):
-                self.start_urls = ["https://search.cnbc.com/rs/search/view.html?partnerId=2000&keywords=%s&sort=date&type=news&source=CNBC.com&pubtime=0&pubfreq=a" % name]
-                Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//div[@id="rightPagCol"]/a',)), callback="parse", follow= True),)
-            #elif (domain == "washingtonpost.com"):
-            #    self.start_urls = ["https://www.washingtonpost.com/newssearch/?query=%s&spellcheck=false" % name]
-            elif (domain == "reuters.com"):
-                self.start_urls = ["https://www.reuters.com/search/news?blob=%s&sortBy=date&dateRange=all" % name]
-                Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//a[@class="rounded pageNext"]',)), callback="parse", follow= True),)
+        super(GenericSpider,self).__init__(*args, **kwargs)
+        self.custom_settings = {'FEED_URI' : "/%s.csv" % name }
+        self.domain = domain
+        self.page = 1
+        self.maxDate = datetime.date.today()
+        self.minDate = self.maxDate - datetime.timedelta(days, 0, 0)
+        self.count = 0
+        if (domain == "wsj.com"):
+            self.start_urls = ["https://www.wsj.com/search/term.html?KEYWORDS=%s" % name ]
+        elif (domain == "bloomberg.com"):
+            self.start_urls = ["https://www.bloomberg.com/search?query=%s&sort=time:desc" % name]
+            Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//a[@class="content-next-link"]',)), callback="parse", follow= True),)
+        elif (domain == "fool.com"):
+            self.start_urls = ["https://www.fool.com/search/solr.aspx?q=%s&sort=date&dataSource=article&handleSearch=true" % name]
+            Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//a[@class="rounded pageNext"]',)), callback="parse", follow= True),)
+        elif (domain == "cnn.com"):
+            self.start_urls = ["http://money.cnn.com/search/index.html?sortBy=date&primaryType=mixed&search=Search&query=%s" % name]
+        elif (domain == "cnbc.com"):
+            self.start_urls = ["https://search.cnbc.com/rs/search/view.html?partnerId=2000&keywords=%s&sort=date&type=news&source=CNBC.com&pubtime=0&pubfreq=a" % name]
+            Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//div[@id="rightPagCol"]/a',)), callback="parse", follow= True),)
+        #elif (domain == "washingtonpost.com"):
+        #    self.start_urls = ["https://www.washingtonpost.com/newssearch/?query=%s&spellcheck=false" % name]
+        elif (domain == "reuters.com"):
+            self.start_urls = ["https://www.reuters.com/search/news?blob=%s&sortBy=date&dateRange=all" % name]
+            Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//a[@class="rounded pageNext"]',)), callback="parse", follow= True),)
 
     def parse(self,response):
         print(self.maxDate , self.minDate)
@@ -160,4 +161,12 @@ def runCrawlers():
 
     reactor.run() #script will end until all jobs are finished
 
-runCrawlers()
+
+
+if __name__ == "__main__":
+    # create Spark context with Spark configuration
+    conf = SparkConf().setAppName("Spark Count")
+    sc = SparkContext(conf=conf)
+
+
+    runCrawlers()
