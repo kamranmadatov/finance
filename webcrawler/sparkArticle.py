@@ -27,19 +27,41 @@ from newspaper import Article
 from scrapy_splash import SplashRequest
 import sys
 sys.path.append('/Users/bthai/Desktop/venv/finance/SentimentScore')
-from pyspark import SparkContext, SparkConf
+#from pyspark import SparkContext, SparkConf
 import Generic_Parser as GP
+#import MySQLdb
+import mysql.connector as mysqlConn
+
+db = mysqlConn.connect(host='localhost', user='mysql',password='',database='test')
+cursor = db.cursor()
 
 class StackItem(Item):
     domain = Field()
     title = Field()
     url = Field()
 
-def articleConversion(url, domain):
+def articleConversion(url, domain, compName, date):
     if ("http" not in url) and (domain not in url):
         url = 'https://www.' + domain + url
         url = url.replace('"', '')
+
+    cursor.execute("SELECT * FROM `articles` WHERE `articleURL` = '%s'", (url))
+    rowcount = len(cursor.fetchall())
+    print("Row: " + str(rowcount))
+    if rowcount == 0:
+        try:
+            cursor.execute("INSERT INTO `articles` (`articleURL`, `company`, `domain`, `date`) VALUES ('%s', '%s', '%s', '%s')" % (url, compName, domain, date))
+            #print("Got here!")
+            db.commit()
+        except:
+            db.rollback()
+    else:
+        print("Existed")
+        return
+
     article = Article(url)
+
+    #Split in database between scoring and articles, separate script for article parsing?
     try:
         article.download()
         article.parse()
@@ -72,9 +94,10 @@ class GenericSpider(Spider):
 
     def __init__(self, domain=None, name=None, days=None, *args, **kwargs):
         super(GenericSpider,self).__init__(*args, **kwargs)
-        self.custom_settings = {'FEED_URI' : "/%s.csv" % name }
+        #self.custom_settings = {'FEED_URI' : "/%s.csv" % name }
         self.domain = domain
         self.page = 1
+        self.compName = name
         self.maxDate = datetime.date.today()
         self.minDate = self.maxDate - datetime.timedelta(days, 0, 0)
         self.count = 0
@@ -119,14 +142,7 @@ class GenericSpider(Spider):
         for article in articles:
             #do page parsing by "next" button (The Motley Fool, Bloombergh, MoneyCNN)
             date = getDate(article.xpath('a/@href').extract()[0], self.domain)
-            print(date)
-            try:
-                date = date.date()
-                if(date <= self.maxDate and date >= self.minDate):
-                    articleConversion(article.xpath('a/@href').extract()[0], self.domain)
-                    print(date)
-            except:
-                pass
+            articleConversion(article.xpath('a/@href').extract()[0], self.domain, self.compName, date.date())
         try:
             if (date > self.minDate):
                 if next_page:
@@ -145,28 +161,22 @@ class GenericSpider(Spider):
 
 def runCrawlers():
     #ask user for company's name
-    queryName = str(input("Enter a company's name : ")).lower()
-    daysBack = int(input("Enter how many days back: "))
+    #queryName = str(input("Enter a company's name : ")).lower()
+    queryName = "tesla"
+    #daysBack = int(input("Enter how many days back: "))
+    daysBack = 2
     configure_logging()
     runner = CrawlerRunner()
     GP.createDoc()
     #create instance of spider and pass argument
     #runner.crawl(GenericSpider, domain="wsj.com", name=queryName, days=daysBack)
-    #runner.crawl(GenericSpider, domain="bloomberg.com", name=queryName, days=daysBack)
+    runner.crawl(GenericSpider, domain="bloomberg.com", name=queryName, days=daysBack)
     #runner.crawl(GenericSpider, domain="fool.com", name=queryName,days=daysBack)
     #runner.crawl(GenericSpider, domain="cnbc.com", name=queryName, days=daysBack)
-    runner.crawl(GenericSpider, domain="cnn.com", name=queryName, days=daysBack)
+    #runner.crawl(GenericSpider, domain="cnn.com", name=queryName, days=daysBack)
     d = runner.join()
     d.addBoth(lambda _: reactor.stop())
 
     reactor.run() #script will end until all jobs are finished
 
-
-
-if __name__ == "__main__":
-    # create Spark context with Spark configuration
-    conf = SparkConf().setAppName("Spark Count")
-    sc = SparkContext(conf=conf)
-
-
-    runCrawlers()
+runCrawlers()

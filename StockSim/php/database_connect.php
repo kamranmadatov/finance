@@ -1,16 +1,16 @@
 <?php
 
+
+$servername = "financegroup.cs8piwvafix8.us-east-1.rds.amazonaws.com";
+$username = "slustudents";
+$password = "financeteam";
 /*
-$servername = "slustockmarket.chy61trcz99n.us-west-2.rds.amazonaws.com";
-$username = "SLU_USER";
-$password = "slupassword";
-*/
 $servername = "127.0.0.1";
 $username = "root";
 $password = "";
+*/
 
-$dbname = "production";
-
+$dbname = "users";
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 

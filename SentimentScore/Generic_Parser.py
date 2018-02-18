@@ -91,10 +91,6 @@ def getArticle(url,date,title,body):
     f_out = open(OUTPUT_FILE, 'a')
     wr = csv.writer(f_out, lineterminator='\n')
 
-
-    print(title)
-
-
     doc_len = len(body)
     body = re.sub('(May|MAY)', ' ', body)  # drop all May month references
     body = body.upper()  # for this parse caps aren't informative so shift
