@@ -26,14 +26,16 @@ import datetime
 from newspaper import Article
 from scrapy_splash import SplashRequest
 import sys
+import time
+import numpy as np
 sys.path.append('/Users/bthai/Desktop/venv/finance/SentimentScore')
 #from pyspark import SparkContext, SparkConf
 import Generic_Parser as GP
-#import MySQLdb
-import mysql.connector as mysqlConn
+import mysql.connector
 
-db = mysqlConn.connect(host='localhost', user='mysql',password='',database='test')
-cursor = db.cursor()
+conn=mysql.connector.connect(user='mysql', password='', host='localhost',database='test')
+mycursor=conn.cursor()
+
 
 class StackItem(Item):
     domain = Field()
@@ -44,29 +46,13 @@ def articleConversion(url, domain, compName, date):
     if ("http" not in url) and (domain not in url):
         url = 'https://www.' + domain + url
         url = url.replace('"', '')
-
-    cursor.execute("SELECT * FROM `articles` WHERE `articleURL` = '%s'", (url))
-    rowcount = len(cursor.fetchall())
-    print("Row: " + str(rowcount))
-    if rowcount == 0:
-        try:
-            cursor.execute("INSERT INTO `articles` (`articleURL`, `company`, `domain`, `date`) VALUES ('%s', '%s', '%s', '%s')" % (url, compName, domain, date))
-            #print("Got here!")
-            db.commit()
-        except:
-            db.rollback()
-    else:
-        print("Existed")
-        return
-
     article = Article(url)
-
-    #Split in database between scoring and articles, separate script for article parsing?
     try:
         article.download()
         article.parse()
         article.nlp()
-        GP.getArticle(url,article.publish_date.date(),'test',article.text)
+        GP.getArticle(domain, url, compName, date,article.text)
+
     except:
         pass
     return
@@ -142,8 +128,12 @@ class GenericSpider(Spider):
         for article in articles:
             #do page parsing by "next" button (The Motley Fool, Bloombergh, MoneyCNN)
             date = getDate(article.xpath('a/@href').extract()[0], self.domain)
-            articleConversion(article.xpath('a/@href').extract()[0], self.domain, self.compName, date.date())
+            try:
+                articleConversion(article.xpath('a/@href').extract()[0], self.domain, self.compName, date.date())
+            except:
+                pass
         try:
+            date = date.date()
             if (date > self.minDate):
                 if next_page:
                     self.page+= 1
@@ -159,24 +149,29 @@ class GenericSpider(Spider):
 
 
 
-def runCrawlers():
-    #ask user for company's name
-    #queryName = str(input("Enter a company's name : ")).lower()
-    queryName = "tesla"
-    #daysBack = int(input("Enter how many days back: "))
-    daysBack = 2
-    configure_logging()
-    runner = CrawlerRunner()
-    GP.createDoc()
+def runCrawlers(queryName, daysBack, runner):
+    #configure_logging()
+    #runner = CrawlerRunner()
     #create instance of spider and pass argument
     #runner.crawl(GenericSpider, domain="wsj.com", name=queryName, days=daysBack)
     runner.crawl(GenericSpider, domain="bloomberg.com", name=queryName, days=daysBack)
     #runner.crawl(GenericSpider, domain="fool.com", name=queryName,days=daysBack)
     #runner.crawl(GenericSpider, domain="cnbc.com", name=queryName, days=daysBack)
     #runner.crawl(GenericSpider, domain="cnn.com", name=queryName, days=daysBack)
-    d = runner.join()
-    d.addBoth(lambda _: reactor.stop())
 
-    reactor.run() #script will end until all jobs are finished
-
-runCrawlers()
+start = time.time()
+print(datetime.date.today().strftime('%Y-%m-%d'))
+mycursor.execute("SELECT Company, Date FROM uniqueStocks WHERE date <= '%s'" % datetime.date.today().strftime('%Y-%m-%d'))
+result = mycursor.fetchall()
+configure_logging()
+runner = CrawlerRunner()
+for row in result:
+    daysBack = (datetime.date.today() - datetime.datetime.strptime(row[1], '%Y-%m-%d').date()).days
+    runCrawlers(row[0], daysBack+1, runner)
+    mycursor.execute("UPDATE uniqueStocks SET date = '%s' WHERE uniqueStocks.Company = '%s'" % (datetime.date.today().strftime('%Y-%m-%d'), row[0]))
+    conn.commit()
+d = runner.join()
+d.addBoth(lambda _: reactor.stop())
+reactor.run() #script will end until all jobs are finished
+end = time.time()
+print(end - start)

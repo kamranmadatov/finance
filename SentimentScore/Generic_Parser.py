@@ -38,10 +38,18 @@ import re
 import string
 import sys
 import time
-sys.path.append('/Users/bthai/Desktop/venv/finance/SentimentScore/Modules')  # Modify to identify path for custom modules
+import mysql.connector
+
+conn=mysql.connector.connect(user='mysql', password='', host='localhost',database='test')
+mycursor=conn.cursor()
+
+
+
+
+sys.path.append('../SentimentScore/Modules')  # Modify to identify path for custom modules
 #sys.path.append('./Modules')  # Modify to identify path for custom modules
 import Load_MasterDictionary as LM
-path = '/Users/bthai/Desktop/venv/finance/SentimentScore/'
+path = '../SentimentScore/'
 # User defined directory for files to be parsed
 TARGET_FILES = r'' + path + '/TestParse/*.*'
 # User defined file pointer to LM dictionary
@@ -87,9 +95,13 @@ def createDoc():
     wr = csv.writer(f_out, lineterminator='\n')
     wr.writerow(OUTPUT_FIELDS)
 
-def getArticle(url,date,title,body):
-    f_out = open(OUTPUT_FILE, 'a')
-    wr = csv.writer(f_out, lineterminator='\n')
+def getArticle(domain,url,company,date,body):
+    #f_out = open(OUTPUT_FILE, 'a')
+    #wr = csv.writer(f_out, lineterminator='\n')
+
+
+    #print(title)
+
 
     doc_len = len(body)
     body = re.sub('(May|MAY)', ' ', body)  # drop all May month references
@@ -98,10 +110,17 @@ def getArticle(url,date,title,body):
     output_data = get_data(body)
     output_data[0] = url
     output_data[1] = date
-    output_data[2] = title
+    #output_data[2] = title
     output_data[3] = doc_len
     output_data[5] = output_data[6]-output_data[7]
-    wr.writerow(output_data)
+    data=(domain,url,company, date, output_data[5])
+    mycursor.execute("INSERT INTO articles "
+                     "(domain, articleURL, company, date, sentScore) "
+                     "VALUES (%s, %s, %s, %s, %s)", data)
+    conn.commit()
+    #wr.writerow(output_data)
+
+
 
 
 
