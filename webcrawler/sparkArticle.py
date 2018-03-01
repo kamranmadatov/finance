@@ -26,15 +26,23 @@ import datetime
 from newspaper import Article
 from scrapy_splash import SplashRequest
 import sys
+import time
+import numpy as np
 sys.path.append('/Users/bthai/Desktop/venv/finance/SentimentScore')
+#from pyspark import SparkContext, SparkConf
 import Generic_Parser as GP
+import mysql.connector
+
+conn=mysql.connector.connect(user='mysql', password='', host='localhost',database='test')
+mycursor=conn.cursor()
+
 
 class StackItem(Item):
     domain = Field()
     title = Field()
     url = Field()
 
-def articleConversion(url, domain):
+def articleConversion(url, domain, compName, date):
     if ("http" not in url) and (domain not in url):
         url = 'https://www.' + domain + url
         url = url.replace('"', '')
@@ -43,7 +51,8 @@ def articleConversion(url, domain):
         article.download()
         article.parse()
         article.nlp()
-        GP.getArticle(url,article.publish_date.date(),'test',article.text)
+        GP.getArticle(domain, url, compName, date,article.text)
+
     except:
         pass
     return
@@ -70,31 +79,32 @@ class GenericSpider(Spider):
             yield SplashRequest(url=url, callback=self.parse, endpoint='render.html')
 
     def __init__(self, domain=None, name=None, days=None, *args, **kwargs):
-            super(GenericSpider,self).__init__(*args, **kwargs)
-            self.custom_settings = {'FEED_URI' : "/%s.csv" % name }
-            self.domain = domain
-            self.page = 1
-            self.maxDate = datetime.date.today()
-            self.minDate = self.maxDate - datetime.timedelta(days, 0, 0)
-            self.count = 0
-            if (domain == "wsj.com"):
-                self.start_urls = ["https://www.wsj.com/search/term.html?KEYWORDS=%s" % name ]
-            elif (domain == "bloomberg.com"):
-                self.start_urls = ["https://www.bloomberg.com/search?query=%s&sort=time:desc" % name]
-                Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//a[@class="content-next-link"]',)), callback="parse", follow= True),)
-            elif (domain == "fool.com"):
-                self.start_urls = ["https://www.fool.com/search/solr.aspx?q=%s&sort=date&dataSource=article&handleSearch=true" % name]
-                Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//a[@class="rounded pageNext"]',)), callback="parse", follow= True),)
-            elif (domain == "cnn.com"):
-                self.start_urls = ["http://money.cnn.com/search/index.html?sortBy=date&primaryType=mixed&search=Search&query=%s" % name]
-            elif (domain == "cnbc.com"):
-                self.start_urls = ["https://search.cnbc.com/rs/search/view.html?partnerId=2000&keywords=%s&sort=date&type=news&source=CNBC.com&pubtime=0&pubfreq=a" % name]
-                Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//div[@id="rightPagCol"]/a',)), callback="parse", follow= True),)
-            #elif (domain == "washingtonpost.com"):
-            #    self.start_urls = ["https://www.washingtonpost.com/newssearch/?query=%s&spellcheck=false" % name]
-            elif (domain == "reuters.com"):
-                self.start_urls = ["https://www.reuters.com/search/news?blob=%s&sortBy=date&dateRange=all" % name]
-                Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//a[@class="rounded pageNext"]',)), callback="parse", follow= True),)
+        super(GenericSpider,self).__init__(*args, **kwargs)
+        #self.custom_settings = {'FEED_URI' : "/%s.csv" % name }
+        self.domain = domain
+        self.page = 1
+        self.compName = name
+        self.maxDate = datetime.date.today()
+        self.minDate = self.maxDate - datetime.timedelta(days, 0, 0)
+        self.count = 0
+        if (domain == "wsj.com"):
+            self.start_urls = ["https://www.wsj.com/search/term.html?KEYWORDS=%s" % name ]
+        elif (domain == "bloomberg.com"):
+            self.start_urls = ["https://www.bloomberg.com/search?query=%s&sort=time:desc" % name]
+            Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//a[@class="content-next-link"]',)), callback="parse", follow= True),)
+        elif (domain == "fool.com"):
+            self.start_urls = ["https://www.fool.com/search/solr.aspx?q=%s&sort=date&dataSource=article&handleSearch=true" % name]
+            Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//a[@class="rounded pageNext"]',)), callback="parse", follow= True),)
+        elif (domain == "cnn.com"):
+            self.start_urls = ["http://money.cnn.com/search/index.html?sortBy=date&primaryType=mixed&search=Search&query=%s" % name]
+        elif (domain == "cnbc.com"):
+            self.start_urls = ["https://search.cnbc.com/rs/search/view.html?partnerId=2000&keywords=%s&sort=date&type=news&source=CNBC.com&pubtime=0&pubfreq=a" % name]
+            Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//div[@id="rightPagCol"]/a',)), callback="parse", follow= True),)
+        #elif (domain == "washingtonpost.com"):
+        #    self.start_urls = ["https://www.washingtonpost.com/newssearch/?query=%s&spellcheck=false" % name]
+        elif (domain == "reuters.com"):
+            self.start_urls = ["https://www.reuters.com/search/news?blob=%s&sortBy=date&dateRange=all" % name]
+            Rules = (Rule(LinkExtractor(allow=(), restrict_xpaths=('//a[@class="rounded pageNext"]',)), callback="parse", follow= True),)
 
     def parse(self,response):
         print(self.maxDate , self.minDate)
@@ -118,15 +128,12 @@ class GenericSpider(Spider):
         for article in articles:
             #do page parsing by "next" button (The Motley Fool, Bloombergh, MoneyCNN)
             date = getDate(article.xpath('a/@href').extract()[0], self.domain)
-            print(date)
             try:
-                date = date.date()
-                if(date <= self.maxDate and date >= self.minDate):
-                    articleConversion(article.xpath('a/@href').extract()[0], self.domain)
-                    print(date)
+                articleConversion(article.xpath('a/@href').extract()[0], self.domain, self.compName, date.date())
             except:
                 pass
         try:
+            date = date.date()
             if (date > self.minDate):
                 if next_page:
                     self.page+= 1
@@ -142,22 +149,29 @@ class GenericSpider(Spider):
 
 
 
-def runCrawlers():
-    #ask user for company's name
-    queryName = str(input("Enter a company's name : ")).lower()
-    daysBack = int(input("Enter how many days back: "))
-    configure_logging()
-    runner = CrawlerRunner()
-    GP.createDoc()
+def runCrawlers(queryName, daysBack, runner):
+    #configure_logging()
+    #runner = CrawlerRunner()
     #create instance of spider and pass argument
     #runner.crawl(GenericSpider, domain="wsj.com", name=queryName, days=daysBack)
     runner.crawl(GenericSpider, domain="bloomberg.com", name=queryName, days=daysBack)
     #runner.crawl(GenericSpider, domain="fool.com", name=queryName,days=daysBack)
     #runner.crawl(GenericSpider, domain="cnbc.com", name=queryName, days=daysBack)
     #runner.crawl(GenericSpider, domain="cnn.com", name=queryName, days=daysBack)
-    d = runner.join()
-    d.addBoth(lambda _: reactor.stop())
 
-    reactor.run() #script will end until all jobs are finished
-
-runCrawlers()
+start = time.time()
+print(datetime.date.today().strftime('%Y-%m-%d'))
+mycursor.execute("SELECT Company, Date FROM uniqueStocks WHERE date <= '%s'" % datetime.date.today().strftime('%Y-%m-%d'))
+result = mycursor.fetchall()
+configure_logging()
+runner = CrawlerRunner()
+for row in result:
+    daysBack = (datetime.date.today() - datetime.datetime.strptime(row[1], '%Y-%m-%d').date()).days
+    runCrawlers(row[0], daysBack+1, runner)
+    mycursor.execute("UPDATE uniqueStocks SET date = '%s' WHERE uniqueStocks.Company = '%s'" % (datetime.date.today().strftime('%Y-%m-%d'), row[0]))
+    conn.commit()
+d = runner.join()
+d.addBoth(lambda _: reactor.stop())
+reactor.run() #script will end until all jobs are finished
+end = time.time()
+print(end - start)
