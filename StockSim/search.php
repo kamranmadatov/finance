@@ -1,11 +1,11 @@
 <?php
 if (isset($_GET['showSt'])) {
-  $showSt = $_GET['showSt'];
+	$showSt = $_GET['showSt'];
 } else {
-  $showSt = 0;
+	$showSt = 0;
 };
 if (isset($_GET['st'])) {
-  $st = $_GET['st'];
+	$st = $_GET['st'];
 };
 ?>
 <html>
@@ -14,21 +14,21 @@ if (isset($_GET['st'])) {
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400;300' rel='stylesheet' type='text/css'>
     <link href='css/style.css' rel='stylesheet'>
     <link href='css/model-u.css' rel='stylesheet'>
-  <link href='css/bootstrap.css' rel='stylesheet'>
+	<link href='css/bootstrap.css' rel='stylesheet'>
     <title>Search a Stock</title>
     <script src="js/jquery-3.1.1.min.js"></script>
     <script src="js/tv.js"></script>
     <script src="js/jquery.ajax-cross-origin.min.js"></script>
     <script src="js/app.js"></script>
-  <!-- <script src="js/dropDown.js"></script> -->
-  <script type="text/javascript" charset="utf-8" src="js/jquery.leanModal.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
+	<!-- <script src="js/dropDown.js"></script> -->
+	<script type="text/javascript" charset="utf-8" src="js/jquery.leanModal.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
   </head>
-  <?php
-    if ($showSt == 1) {
-      echo '<script type="text/javascript">Ticker("'.$st.'");</script>';
-    };
-  ?>
+	<?php
+		if ($showSt == 1) {
+			echo '<script type="text/javascript">Ticker("'.$st.'");</script>';
+		};
+	?>
   <body>
     <div class="scroll-pane">
         
@@ -41,7 +41,7 @@ if (isset($_GET['st'])) {
 
       <!-- Menu -->
       <ul>
-    <li><a href="profile.php"><img align="center" src="icon/home.png" class="icon"></a></li>
+		<li><a href="profile.php"><img align="center" src="icon/home.png" class="icon"></a></li>
         <li><a href="#"></a><img align="center" src="icon/search.png" class="icon"></li>
         <!-- <li><a href="browse.php"><img align="center" src="icon/browse.png" class="icon"></a></li> -->
         <!-- <li><a href=""><img align="center" src="icon/people.png" class="icon"></a></li> -->
@@ -61,7 +61,7 @@ if (isset($_GET['st'])) {
           <div id="stockTickGet">
             Ticker: <input type="text" id="tickBox" list="options"/>
             <button onclick="Ticker(); getAlphaVantagedata();" id="tickerSubmit" class="btn btn-primary">Submit</button>
-      <datalist id="options"></datalist>
+			<datalist id="options"></datalist>
           </div>
           <div id='showStockTick' class='stockTicker'></div>
           <!-- <div id='stockChart'></div> -->
@@ -72,15 +72,15 @@ if (isset($_GET['st'])) {
           <div id="w"></div>
           <!-- 
           <button class="btn btn-primary" data-toggle="modal" data-target="#modal1">Buy Stocks</button>
-      -->
+		  -->
         
-      <button class="btn btn-primary" onclick="watchList()">Add to Watch List</button>
+		  <button class="btn btn-primary" onclick="watchList()">Add to Watch List</button>
             
     
-<!--  <p>Symbol: &nbsp;<input id=inpSymbol value='MSFT' ></p>-->
-<!--  <p><button onclick="getAlphaVantagedata()" >get Alpha Vantage Data</button></p>-->
+<!--	<p>Symbol: &nbsp;<input id=inpSymbol value='MSFT' ></p>-->
+<!--	<p><button onclick="getAlphaVantagedata()" >get Alpha Vantage Data</button></p>-->
 
-  <div id = "divContents" >Data will appear here. This may take a number of seconds. Open the developer console to see more details.</div>
+	<div id = "divContents" >Data will appear here. This may take a number of seconds. Open the developer console to see more details.</div>
           <script>
 // Thanks to http://www.alphavantage.co/
 
@@ -95,46 +95,33 @@ Get your key here: https://www.alphavantage.co/support/#api-key
 */
 
 
-  const url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=1min&apikey=demo';
-
-
-  function getAlphaVantagedata() {
-
-    const apiKey = "VPMRFGI35I35L24UMRF";
-
-//    const symbol = inpSymbol.value;
+	const url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=1min&apikey=demo';
+	function getAlphaVantagedata() {
+		const apiKey = "VPMRFGI35I35L24UMRF";
+//		const symbol = inpSymbol.value;
         const symbol = tickBox.value;
-
-    const url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=' + symbol + '&interval=1min&apikey=' + apiKey;
-
-    requestFile( url );
-
-  }
+		const url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=' + symbol + '&interval=1min&apikey=' + apiKey;
+		requestFile( url );
+	}
 
 
-  function requestFile( url ) {
+	function requestFile( url ) {
+		const xhr = new XMLHttpRequest();
+		xhr.open( 'GET', url, true );
+		xhr.onerror = function( xhr ) { console.log( 'error:', xhr  ); };
+		xhr.onprogress = function( xhr ) { console.log( 'bytes loaded:', xhr.loaded  ); }; /// or something
+		xhr.onload = callback;
+		xhr.send( null );
 
-    const xhr = new XMLHttpRequest();
-    xhr.open( 'GET', url, true );
-    xhr.onerror = function( xhr ) { console.log( 'error:', xhr  ); };
-    xhr.onprogress = function( xhr ) { console.log( 'bytes loaded:', xhr.loaded  ); }; /// or something
-    xhr.onload = callback;
-    xhr.send( null );
+		function callback( xhr ) {
+			let response, json, lines;
+			response = xhr.target.response;
+			divContents.innerText = response;
+			json = JSON.parse( response );
+        console.log( 'json', json );
+		}
 
-    function callback( xhr ) {
-
-      let response, json, lines;
-
-      response = xhr.target.response;
-      divContents.innerText = response;
-
-      json = JSON.parse( response );
-
-console.log( 'json', json );
-
-    }
-
-  }
+	}
 
 
 </script>
@@ -151,27 +138,27 @@ console.log( 'json', json );
               </div>
               <div class="modal-body">
                 <form role="form" id="buyform" method="post" action="php/buyStock.php">
-          <div class="form-group">
+					<div class="form-group">
                         <div class="input-group">
                             <label for="shares" class="input-group-addon glyphicon glyphicon-user">Amount of Shares:</label>
-              <input type="text" class="form-control" id="shares" name="shares" placeholder="Shares Buying..." required>
+							<input type="text" class="form-control" id="shares" name="shares" placeholder="Shares Buying..." required>
                             <label for="start" class="input-group-addon glyphicon glyphicon-user">Start Price (0 for No Limit):</label>
-              <input type="text" class="form-control" id="start" placeholder="(0 for No Limit)" value="0">
+							<input type="text" class="form-control" id="start" placeholder="(0 for No Limit)" value="0">
                             <label for="stop" class="input-group-addon glyphicon glyphicon-user">Stop Price(0 for No Limit):</label>
-              <input type="text" class="form-control" id="stop" placeholder="(0 for No Limit)" value="0">
+							<input type="text" class="form-control" id="stop" placeholder="(0 for No Limit)" value="0">
                             <label for="radiobutton" class="input-group-addon glyphicon glyphicon-user">Select Stock Method (Default - Buying Long):</label>
                             <div class="radio" id="radiobutton">
                                 <label><input class="buysell" type="radio" name="optradio" value="buyLong">Buying Long</label>
                                 <label><input class="buysell" type="radio" name="optradio" value="shortSell">Short Selling</label>
                             </div>
-            </div>
-          </div> 
+						</div>
+					</div> 
 
-        </form>
+				</form>
               </div>
               <div class="modal-footer">
                 <button onclick="buyTheStock()" type="button" class="btn btn-primary" name="buybtn">Confirm</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
               </div>
       </div> 
         -->

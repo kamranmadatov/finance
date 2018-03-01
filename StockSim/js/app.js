@@ -255,43 +255,6 @@ function Ticker(st){
 	};
 }
 
-function ForcePrice(){
-    if(Bid == null || Ask == null){
-        alert("If there is no valid BID or ASK price, then CURRENT price will be charged");
-    }
-}
-
-function buyTheStock() {
-    var selected = $('.buysell:checked').val();
-    if (selected == 'buyLong') {
-        selected = 1;
-        var start = document.getElementById('start').value;
-        var stop = 0;
-    }else{
-        selected = 2;
-        var start = 0;
-        var stop = document.getElementById('stop').value;
-    }
-    var numShares = document.getElementById('shares').value;
-    var sharePrice = document.getElementById('stockTable').rows[0].cells[1].innerHTML;
-    var askTable = document.getElementById('stockTable').rows[3].cells[1].innerHTML;
-    var bidTable = document.getElementById('stockTable').rows[3].cells[3].innerHTML;
-    //var start = document.getElementById('start').value;
-    //var stop = document.getElementById('stop').value;
-    var totalPrice = numShares * askTable;
-    window.location.href = "php/buyStock.php?compName="+ CompName + "&ask=" + askTable + "&bid=" + bidTable+ "&numShares=" + numShares + "&sharePrice=" + sharePrice + "&symbol=" + symbol + "&totalPrice=" + totalPrice + "&longOrshort="+ selected + "&start=" + start + "&stop=" + stop;
-}
-
-function cancelOrder(e) {
-    var row = e.closest('tr').find("td:nth-child(1)").text();
-    var buy = 0;
-    window.location.href = "php/cancelStock.php?orderNum=" + row + "&buyorsell=" + buy;
-}
-function cancelSell(e) {
-    var row = e.closest('tr').find("td:nth-child(1)").text();
-    var sell = 1;
-    window.location.href = "php/cancelStock.php?orderNum=" + row+ "&buyorsell=" + sell;
-}
 
 function sellStock(currentRow) {
     'use strict';
@@ -352,7 +315,7 @@ function sellStock(currentRow) {
 }
 
 function view(stock) {
-	document.location.href = "search.php?showSt=1&st="+stock;
+	window.location.href = "php/profile.php?symbol=" + symbol + "&compName=" + CompName;
 }
 
 function watchList() {
@@ -361,33 +324,4 @@ function watchList() {
 
 function removeWatch(num) {
 	window.location.href = "php/removeWatchList.php?orderNum=" + num;
-}
-
-function buyStockWatch(row){
-    var offset = new Date().toLocaleString("en-US", {timeZone: "America/New_York"});
-    var date = offset.split(",");
-    date = date[0];
-    var datec = date + ", 4:00:00 PM";
-    var dateo = date + ", 9:30:00 AM";
-    //alert(date);
-    if((new Date(Date.parse(offset))) > (new Date(Date.parse(datec))) || (new Date(Date.parse(offset))) < (new Date(Date.parse(dateo)))){
-        alert("Trading hours are between 9:30 AM to 4:00 PM EST. ");
-    }else{
-        var selected = $('.buysell:checked').val();
-        if (selected == 'buyLong') {
-            selected = 1;
-        }else{
-            selected = 2;
-        }
-        var symbol = row.find("td:nth-child(3)").text();
-        var CompName = row.find("td:nth-child(2)").text();
-        var numShares = document.getElementById('shares').value;
-        var sharePrice = row.find("td:nth-child(4)").text();
-        var askTable = row.find("td:nth-child(5)").text();
-        var bidTable = row.find("td:nth-child(6)").text();
-        var start = document.getElementById('start').value;
-        var stop = document.getElementById('stop').value;
-        var totalPrice = numShares * askTable;
-        window.location.href = "php/buyStock.php?compName="+ CompName + "&ask=" + askTable + "&bid=" + bidTable+ "&numShares=" + numShares + "&sharePrice=" + sharePrice + "&symbol=" + symbol + "&totalPrice=" + totalPrice + "&longOrshort="+ selected + "&start=" + start + "&stop=" + stop;
-    }
 }

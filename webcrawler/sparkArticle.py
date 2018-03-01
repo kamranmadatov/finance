@@ -155,7 +155,7 @@ def runCrawlers(queryName, daysBack, runner):
     #create instance of spider and pass argument
     #runner.crawl(GenericSpider, domain="wsj.com", name=queryName, days=daysBack)
     runner.crawl(GenericSpider, domain="bloomberg.com", name=queryName, days=daysBack)
-    #runner.crawl(GenericSpider, domain="fool.com", name=queryName,days=daysBack)
+    runner.crawl(GenericSpider, domain="fool.com", name=queryName,days=daysBack)
     #runner.crawl(GenericSpider, domain="cnbc.com", name=queryName, days=daysBack)
     #runner.crawl(GenericSpider, domain="cnn.com", name=queryName, days=daysBack)
 
