@@ -319,6 +319,8 @@ function view(stock) {
 }
 
 function watchList() {
+    symbol = document.getElementById("companySymbol").innerHTML;
+    CompName = document.getElementById("companyName").innerHTML;
 	window.location.href = "php/watchList.php?symbol=" + symbol + "&compName=" + CompName;
 }
 
