@@ -19,6 +19,65 @@ $infoarray = $_SESSION['infoarray'];
     <script src="js/app.js"></script>
 	<script type="text/javascript" charset="utf-8" src="js/jquery.leanModal.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="http://www.amcharts.com/lib/3/amcharts.js"></script>
+    <script src="http://www.amcharts.com/lib/3/serial.js"></script>
+    <script src="https://www.amcharts.com/lib/3/xy.js"></script>
+    <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+    <script src="http://www.amcharts.com/lib/3/plugins/dataloader/dataloader.min.js"></script>
+        <script>
+        var chart = AmCharts.makeChart("chartdiv", {
+            "type": "xy",
+            "theme": "light",
+            "marginRight": 80,
+            "dataDateFormat": "YYYY-MM-DD",
+            "startDuration": 1.5,
+            "trendLines": [],
+            "balloon": {
+                "adjustBorderColor": false,
+                "shadowAlpha": 0,
+                "fixedPosition":true
+            },        
+            "dataLoader": {
+                "url": "php/data.php",
+                "format": "json",
+            },
+            "graphs": [{
+                "balloonText": "<div style='margin:5px;'><b>[[x]]</b><br>Sentiment Score:<b>[[y]]</b><br>URL:<b>[[articleURL]]</b></div>",
+                "bullet": "diamond",
+                "id": "AmGraph-1",
+                "lineAlpha": 0,
+                "lineColor": "#b0de09",
+                "fillAlphas": 0,
+                "xField": "date",
+                "yField": "avgScore",
+                "urlField": "articleURL"
+            }],
+            "valueAxes": [{
+                "id": "ValueAxis-1",
+                "axisAlpha": 0
+            }, {
+                "id": "ValueAxis-2",
+                "axisAlpha": 0,
+                "position": "bottom",
+                "type": "date",
+                "minimumDate": new Date().setDate(new Date().getDate() - 20),
+                "maximumDate": new Date()
+            }],
+            "allLabels": [],
+            "titles": [],
+            "chartScrollbar": {
+                "offset": 15,
+                "scrollbarHeight": 5
+            },
+
+            "chartCursor":{
+               "pan":true,
+               "cursorAlpha":0,
+               "valueLineAlpha":0
+            }
+        });
+      </script>
   </head>
   <body>
     <div class="scroll-pane">
@@ -56,16 +115,20 @@ $infoarray = $_SESSION['infoarray'];
 					  <th>Trans ID</th>
                       <th>Company Name</th>
                       <th>Symbol</th>
+                      <th>Sentiment Analysis</th>
                   </tr>
               </thead>
               <tbody>
               <?php
                 while($watchRows = mysqli_fetch_array($_SESSION['transaction'])){
+                 $result = mysqli_query($conn, "SELECT AVG(sentScore) FROM articles WHERE company ='".$watchRows['Company']."';");
+                 $array = mysqli_fetch_row($result);
                  echo" 
                  <tr>
 				 	  <td>".$watchRows['id']."</td>
                       <td>".$watchRows['Company']."</td>
                       <td>".$watchRows['Ticker']."</td>
+                      <td>".$array[0]."</td>
 					  <td><button class='btn btn-primary' onclick='removeWatch(\"".$watchRows['id']."\")'>Remove</button></td>
 					  <td><button class='btn btn-primary' onclick='view(\"".$watchRows['Ticker']."\")'>View Details</button></td>
                   </tr>";
@@ -75,82 +138,28 @@ $infoarray = $_SESSION['infoarray'];
             </table>
 			  
         </div>
-        <div id="modalsell" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Sell Stocks</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <form role="form">
-					<div class="form-group">
-                        <div class="input-group">
-                            <label for="shares" class="input-group-addon glyphicon glyphicon-user">Amount of Shares:</label>
-							<input type="text" class="form-control" id="sharess" placeholder="Shares Selling...">
-                            <label for="start" class="input-group-addon glyphicon glyphicon-user">Min Sell Price (Starting Price - Long Only):</label>
-							<input type="text" class="form-control" id="starts" placeholder="(0 for No Limit)" value="0">
-                            
-                            <label for="stop" class="input-group-addon glyphicon glyphicon-user">Max Sell Price (Stop Price - Short Only:</label>
-							<input type="text" class="form-control" id="stops" placeholder="(0 for No Limit)" value="0">
-						</div> <!-- /.input-group -->
-					</div> <!-- /.form-group -->
-
-				</form>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="placesell btn btn-primary" data-toggle='modal' onclick="sellStock()">Place Sell</button>
-				<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
-              </div>
-            </div>
-          </div>
-      </div>
-			  
-        <div id="modalbuywatch" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Buy Stocks</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <form role="form">
-					<div class="form-group">
-                        <div class="input-group">
-                            <label for="shares" class="input-group-addon glyphicon glyphicon-user">Amount of Shares:</label>
-							<input type="text" class="form-control" id="shares" name="shares" placeholder="Shares Buying..." required>
-                            <label for="start" class="input-group-addon glyphicon glyphicon-user">Start Price (0 for No Limit):</label>
-							<input type="text" class="form-control" id="start" placeholder="(0 for No Limit)" value="0">
-                            <label for="stop" class="input-group-addon glyphicon glyphicon-user">Stop Price(0 for No Limit):</label>
-							<input type="text" class="form-control" id="stop" placeholder="(0 for No Limit)" value="0">
-                            <label for="radiobutton" class="input-group-addon glyphicon glyphicon-user">Select Stock Method(Default - Buying Long):</label>
-                            <div class="radio" id="radiobutton">
-                                <label><input class="buysell" type="radio" name="optradio" value="buyLong">Buying Long</label>
-                                <label><input class="buysell" type="radio" name="optradio" value="shortSell">Short Selling</label>
-                            </div>
-						</div> <!-- /.input-group -->
-					</div> <!-- /.form-group -->
-
-				</form>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="buywatch btn btn-primary" data-toggle='modal' onclick="buyStockWatch()" >Confirm</button>
-				<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
-              </div>
-      </div>
+        <div id="chartdiv" style="height: 300px; width: 100%;"></div>
+        <?php
+            $date = date_create();
+            $old = date_format(date_sub($date, date_interval_create_from_date_string('20 days')), 'Y-m-d');
+            $date = date_format(date_create(), 'Y-m-d');
+            $query = "SELECT articleURL,date, sentScore as avgScore FROM articles WHERE date <= '".$date."' AND date >= '".$old."' ORDER BY date ";
+            //echo $query;
+            $result = mysqli_query($conn, $query);
+            $data = array();
+            while ($row = mysqli_fetch_assoc($result)){
+                $data[] = $row;
+            }
+            //echo json_encode($data);   
+        ?>
+        <!-- <div id="myDiv" style="width: 480px; height: 300px; width: 100%;"></div> -->
+        <div align="center">
+            <form role="form" id="loginform" method="post" action="php/clearsess.php">
+                <button type="submit" class="btn btn-primary" data-dismiss="modal">Log Out</button>
+            </form>
+        </div>		  
+       </div>   
     </div>
-    </div>
-	<div align="center">
-        <form role="form" id="loginform" method="post" action="php/clearsess.php">
-			<button type="submit" class="btn btn-primary" data-dismiss="modal">Log Out</button>
-        </form>
-    </div>		  
-   </div>
-        </div>
 		</div>
 	  </div>
   </body>
