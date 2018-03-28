@@ -315,7 +315,7 @@ function sellStock(currentRow) {
 }
 
 function view(stock) {
-	window.location.href = "php/profile.php?symbol=" + symbol + "&compName=" + CompName;
+	window.location.href = "php/profile.php?compName=" + CompName;
 }
 
 function watchList() {
