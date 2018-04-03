@@ -244,6 +244,53 @@ function StockPriceTicker(st) {
 }
 
 
+var chart = AmCharts.makeChart( "chartdiv", {
+  "type": "xy",
+  "theme": "light",
+  "dataDateFormat": "YYYY-MM-DD",
+  "balloon": {
+        "adjustBorderColor": false,
+        "shadowAlpha": 0,
+        "fixedPosition":true
+    },        
+    "graphs": [{
+        "balloonText": "<div style='margin:5px;'><b>[[x]]</b><br>Sentiment Score:<b>[[y]]</b><br>URL:<b>[[articleURL]]</b></div>",
+        "bullet": "diamond",
+        "id": "AmGraph-1",
+        "lineAlpha": 0,
+        "lineColor": "#b0de09",
+        "fillAlphas": 0,
+        "xField": "date",
+        "yField": "avgScore",
+        "urlField": "articleURL"
+    }],
+    "valueAxes": [{
+        "id": "ValueAxis-1",
+        "axisAlpha": 0
+    }, {
+        "id": "ValueAxis-2",
+        "axisAlpha": 0,
+        "position": "bottom",
+        "type": "date",
+        "minimumDate": new Date().setDate(new Date().getDate() - 20),
+        "maximumDate": new Date()
+    }],
+    "allLabels": [],
+    "titles": [],
+    "chartScrollbar": {
+        "offset": 15,
+        "scrollbarHeight": 5
+    },
+    "chartCursor":{
+       "pan":true,
+       "cursorAlpha":0,
+       "valueLineAlpha":0
+    },
+  "dataProvider": chartData,
+  "zoomOutOnDataUpdate": false
+} );
+
+
 function Ticker(st){
 	if (st) {
 		StockPriceTicker(st);
@@ -255,67 +302,8 @@ function Ticker(st){
 	};
 }
 
-
-function sellStock(currentRow) {
-    'use strict';
-    var offset = new Date().toLocaleString("en-US", {timeZone: "America/New_York"});
-    var date = offset.split(",");
-    date = date[0];
-    var datec = date + ", 4:00:00 PM";
-    var dateo = date + ", 9:30:00 AM";
-    var afterhours = "0";
-    //alert(date);
-    if((new Date(Date.parse(offset))) > (new Date(Date.parse(datec))) || (new Date(Date.parse(offset))) < (new Date(Date.parse(dateo)))){
-        alert("Trading hours are between 9:30 AM to 4:00 PM EST. Will be placed under orders");
-        afterhours = "1"
-    }
-    var ticker = currentRow.find("td:nth-child(3)").text(),
-        JSON_url = "http://finance.google.com/finance/info?client=ig&q=NASDAQ%3A" + ticker,
-        YQL_url = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22" + ticker + "%22)&format=json&env=store://datatables.org/alltableswithkeys",
-        StockTickerHTML = "",
-        Price,
-        Ask,
-        Bid,
-        StockTicker = $.when(
-        $.getScript('http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22' + encodeURIComponent(JSON_url) + '%22&format=xml&diagnostics=true&callback=cbfunc', function(){
-        temp = temp.split("//");
-        temp = temp[1].split("</body>");
-        temp = JSON.parse(temp[0]);
-        Price = temp[0].l;
-        }),
-        $.get(YQL_url, function (_return) {
-        var stock = _return.query.results.quote;
-        Bid = stock.Bid;
-        Ask = stock.Ask;
-        if (Ask == null){
-            Ask = 'not valid stock option';
-        }
-        Bid = stock.Bid;
-        if (Bid == null){
-            Bid = 'not valid stock option';
-        }
-        })  
-        ).then(function(){
-            var start = document.getElementById('starts').value;
-            var stop = document.getElementById('stops').value;
-            var shares = document.getElementById('sharess').value;
-            var maxshares = currentRow.find("td:nth-child(6)").text();
-            var transnum = currentRow.find("td:nth-child(1)").text();
-            var stocktype = currentRow.find("td:nth-child(8)").text();
-            var bp = currentRow.find("td:nth-child(4)").text();
-            var compName = currentRow.find("td:nth-child(2)").text();
-            //alert("Ticker: "+ticker+ " Start: "+ start + " Stop: " + stop + " Shares: "+ shares + " Max Shares: " + maxshares + " TransNum: " + transnum);
-            if(parseInt(shares) > parseInt(maxshares)){
-                alert('Can not sell more than current holdings!');
-            }else{
-                window.location.href = "php/sellStock.php?price="+ Price + "&ask=" + Ask + "&bid=" + Bid + "&start=" + start + "&stop=" + stop + "&ticker=" + ticker + "&shares=" + shares + "&maxshares=" + maxshares + "&transnum="+transnum+"&stocktype="+stocktype+"&bp="+bp+"&compName=" + compName + "&ah=" + afterhours;
-            }
-            
-        });
-}
-
 function view(stock) {
-	window.location.href = "php/profile.php?compName=" + CompName;
+	window.location.href = "profile.php?compName=" + stock;
 }
 
 function watchList() {

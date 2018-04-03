@@ -25,23 +25,36 @@ $infoarray = $_SESSION['infoarray'];
     <script src="https://www.amcharts.com/lib/3/xy.js"></script>
     <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
     <script src="http://www.amcharts.com/lib/3/plugins/dataloader/dataloader.min.js"></script>
-        <script>
-        var chart = AmCharts.makeChart("chartdiv", {
-            "type": "xy",
-            "theme": "light",
-            "marginRight": 80,
-            "dataDateFormat": "YYYY-MM-DD",
-            "startDuration": 1.5,
-            "trendLines": [],
-            "balloon": {
+    <script>
+        var chartData = <?php
+            $date = date_create();
+            $old = date_format(date_sub($date, date_interval_create_from_date_string('30 days')), 'Y-m-d');
+            $date = date_format(date_create(), 'Y-m-d');
+
+            $query = "SELECT articleURL,date, sentScore as avgScore FROM articles WHERE date <= '".$date."' AND date >= '".$old."' ORDER BY date";
+
+            if (isset($_GET['compName'])) {
+                $compName = $_GET['compName'];
+                $query = "SELECT articleURL,date,sentScore as avgScore FROM articles WHERE date <= '".$date."' AND date >= '".$old."' AND company='".$compName."' ORDER BY date";
+            };
+
+            $result = mysqli_query($conn, $query);
+            $data = array();
+            while ($row = mysqli_fetch_assoc($result)){
+                $data[] = $row;
+            }
+            echo json_encode($data);
+        ?>
+        
+        var chart = AmCharts.makeChart( "chartdiv", {
+          "type": "xy",
+          "theme": "light",
+          "dataDateFormat": "YYYY-MM-DD",
+          "balloon": {
                 "adjustBorderColor": false,
                 "shadowAlpha": 0,
                 "fixedPosition":true
             },        
-            "dataLoader": {
-                "url": "php/data.php",
-                "format": "json",
-            },
             "graphs": [{
                 "balloonText": "<div style='margin:5px;'><b>[[x]]</b><br>Sentiment Score:<b>[[y]]</b><br>URL:<b>[[articleURL]]</b></div>",
                 "bullet": "diamond",
@@ -70,14 +83,15 @@ $infoarray = $_SESSION['infoarray'];
                 "offset": 15,
                 "scrollbarHeight": 5
             },
-
             "chartCursor":{
                "pan":true,
                "cursorAlpha":0,
                "valueLineAlpha":0
-            }
-        });
-      </script>
+            },
+          "dataProvider": chartData,
+          "zoomOutOnDataUpdate": false
+        } );
+    </script>
   </head>
   <body>
     <div class="scroll-pane">
@@ -128,9 +142,9 @@ $infoarray = $_SESSION['infoarray'];
 				 	  <td>".$watchRows['id']."</td>
                       <td>".$watchRows['Company']."</td>
                       <td>".$watchRows['Ticker']."</td>
-                      <td>".$array[0]."</td>
+                      <td id='sentScore'>".$array[0]."</td>
 					  <td><button class='btn btn-primary' onclick='removeWatch(\"".$watchRows['id']."\")'>Remove</button></td>
-					  <td><button class='btn btn-primary' onclick='view(\"".$watchRows['Ticker']."\")'>View Details</button></td>
+					  <td><button class='btn btn-primary' onclick='view(\"".$watchRows['Company']."\")'>View Details</button></td>
                   </tr>";
                 }
               ?>
@@ -139,20 +153,30 @@ $infoarray = $_SESSION['infoarray'];
 			  
         </div>
         <div id="chartdiv" style="height: 300px; width: 100%;"></div>
+              
+        
         <?php
+            /*
             $date = date_create();
-            $old = date_format(date_sub($date, date_interval_create_from_date_string('20 days')), 'Y-m-d');
+            $old = date_format(date_sub($date, date_interval_create_from_date_string('30 days')), 'Y-m-d');
             $date = date_format(date_create(), 'Y-m-d');
-            $query = "SELECT articleURL,date, sentScore as avgScore FROM articles WHERE date <= '".$date."' AND date >= '".$old."' ORDER BY date ";
-            //echo $query;
+
+            $query = "SELECT articleURL,date, sentScore as avgScore FROM articles WHERE date <= '".$date."' AND date >= '".$old."' ORDER BY date";
+
+            if (isset($_GET['compName'])) {
+                $compName = $_GET['compName'];
+                $query = "SELECT articleURL,date,sentScore as avgScore FROM articles WHERE date <= '".$date."' AND date >= '".$old."' AND company='".$compName."' ORDER BY date";
+            };
+
             $result = mysqli_query($conn, $query);
             $data = array();
             while ($row = mysqli_fetch_assoc($result)){
                 $data[] = $row;
             }
-            //echo json_encode($data);   
+            echo json_encode($data);
+            */
         ?>
-        <!-- <div id="myDiv" style="width: 480px; height: 300px; width: 100%;"></div> -->
+
         <div align="center">
             <form role="form" id="loginform" method="post" action="php/clearsess.php">
                 <button type="submit" class="btn btn-primary" data-dismiss="modal">Log Out</button>
