@@ -1,14 +1,14 @@
 <?php
 
-/*
-$servername = "financegroup.cs8piwvafix8.us-east-1.rds.amazonaws.com";
-$username = "slustudents";
+
+$servername = "finacedb.cc4bh686d7ef.us-east-2.rds.amazonaws.com";
+$username = "fin";
 $password = "financeteam";
-*/
+/*
 $servername = "127.0.0.1";
 $username = "mysql";
 $password = "";
-
+*/
 
 $dbname = "test";
 // Create connection
